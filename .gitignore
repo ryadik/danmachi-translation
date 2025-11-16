@@ -1,3 +1,4 @@
-/transtalor/__pycahche__
-/transtalor/workspace
-/transtalor_example
+/translator/__pycache__
+/translator/workspace
+/translator_example
+*_translated.txt
