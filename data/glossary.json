@@ -1,0 +1,1311 @@
+{
+  "characters": {
+    "beru_kuraneru": {
+      "name": {
+        "ru": "Белл Кранел",
+        "jp": "ベル・クラネル",
+        "romaji": "Beru Kuraneru"
+      },
+      "aliases": [
+        {
+          "ru": "Кроличья лапка",
+          "jp": "白兎の脚",
+          "romaji": "Rabbit Foot"
+        },
+        {
+          "ru": "Рапи Флемиш"
+        },
+        {
+          "ru": "Сияние Льва и Кролика",
+          "jp": "獅兎の光",
+          "romaji": "Shito no hikari"
+        }
+      ],
+      "description": "Капитан Семьи Гестии, уровень 5.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Гестии",
+        "level": 5,
+        "race": "Человек"
+      }
+    },
+    "hesutia": {
+      "name": {
+        "ru": "Гестия",
+        "jp": "ヘスティア",
+        "romaji": "Hesutia"
+      },
+      "aliases": [
+        {
+          "ru": "Богиня Домашнего очага"
+        }
+      ],
+      "description": "Богиня, Глава Семьи Гестии.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гестии",
+        "race": "Божество"
+      }
+    },
+    "ririruka_ade": {
+      "name": {
+        "ru": "Лилирука Арде",
+        "jp": "リリルカ・アーデ",
+        "romaji": "Ririruka Āde"
+      },
+      "aliases": [
+        {
+          "ru": "Лили"
+        },
+        {
+          "ru": "Маленький Маршал",
+          "jp": "小人の大師",
+          "romaji": "Ritoru Māsharu"
+        }
+      ],
+      "description": "Полурослик (паллум), стратег Семьи Гестии.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гестии",
+        "race": "Полурослик (паллум)"
+      }
+    },
+    "verufu_kurozzo": {
+      "name": {
+        "ru": "Вельф Кротцо",
+        "jp": "ヴェルフ・クロッゾ",
+        "romaji": "Verufu Kurozzo"
+      },
+      "aliases": [
+        {
+          "ru": "Игнис",
+          "jp": "不冷",
+          "romaji": "Furei"
+        }
+      ],
+      "description": "Кузнец Семьи Гестии, создатель магических мечей.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Гестии",
+        "race": "Человек"
+      }
+    },
+    "ryu_rion": {
+      "name": {
+        "ru": "Рю Лайон",
+        "jp": "リュー・リオン",
+        "romaji": "Ryū Rion"
+      },
+      "aliases": [
+        {
+          "ru": "Шторм",
+          "jp": "疾風",
+          "romaji": "Shippū/Gale"
+        },
+        {
+          "ru": "Рю Астрея"
+        }
+      ],
+      "description": "Эльфийка, бывший член Семьи Астреи, ныне член Семьи Гестии, уровень 6.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гестии",
+        "level": 6,
+        "race": "Эльф"
+      }
+    },
+    "yamato_mikoto": {
+      "name": {
+        "ru": "Ямато Микото",
+        "jp": "ヤマト・命",
+        "romaji": "Yamato Mikoto"
+      },
+      "aliases": [
+        {
+          "ru": "Абсолютная✝Тень",
+          "jp": "絶✝影",
+          "romaji": "Zetsu✝Ei"
+        }
+      ],
+      "description": "Член Семьи Гестии, родом с Дальнего Востока.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гестии",
+        "race": "Человек"
+      }
+    },
+    "sanjono_haruhime": {
+      "name": {
+        "ru": "Санджоуно Харухимэ",
+        "jp": "サンジョウノ・春姫",
+        "romaji": "Sanjōno Haruhime"
+      },
+      "aliases": [
+        {
+          "ru": "Носительница Шести Золотых Огней",
+          "jp": "六光金主",
+          "romaji": "Rikkou Kinshu"
+        }
+      ],
+      "description": "РенАРД, член Семьи Гестии.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гестии",
+        "race": "РенАРД"
+      }
+    },
+    "fin_dimuna": {
+      "name": {
+        "ru": "Финн Димун",
+        "jp": "フィン・ディムナ",
+        "romaji": "Fin Dimuna"
+      },
+      "aliases": [
+        {
+          "ru": "Храбрец",
+          "jp": "勇者",
+          "romaji": "Yūsha"
+        }
+      ],
+      "description": "Капитан Семьи Локи, паллум, уровень 7.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Локи",
+        "level": 7,
+        "race": "Паллум"
+      }
+    },
+    "riveria_riyosu_aruvu": {
+      "name": {
+        "ru": "Риверия Льос Альф",
+        "jp": "リヴェリア・リヨス・アールヴ",
+        "romaji": "Riveria Riyosu Āruvu"
+      },
+      "aliases": [
+        {
+          "ru": "Девять кругов ада",
+          "jp": "九魔姫",
+          "romaji": "Nain Heru"
+        }
+      ],
+      "description": "Вице-капитан Семьи Локи, высший эльф, сильнейший маг Орарио, уровень 7.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 7,
+        "race": "Высший эльф"
+      }
+    },
+    "garesu_randorokku": {
+      "name": {
+        "ru": "Гарет Ландрок",
+        "jp": "ガレス・ランドロック",
+        "romaji": "Garesu Randorokku"
+      },
+      "aliases": [
+        {
+          "ru": "Эльграм",
+          "jp": "エルガム",
+          "romaji": "Erugamu"
+        },
+        {
+          "ru": "Несгибаемый герой",
+          "jp": "重傑",
+          "romaji": "Jūketsu"
+        }
+      ],
+      "description": "Ветеран Семьи Локи, гном, уровень 7.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Локи",
+        "level": 7,
+        "race": "Гном"
+      }
+    },
+    "aizu_varenshutain": {
+      "name": {
+        "ru": "Айз Валенштайн",
+        "jp": "アイズ・ヴァレンシュタイン",
+        "romaji": "Aizu Varenshutain"
+      },
+      "aliases": [
+        {
+          "ru": "Принцесса Меча",
+          "jp": "剣姫",
+          "romaji": "Kenki"
+        }
+      ],
+      "description": "Член Семьи Локи, уровень 6. Наставница и тайный идеал Белла.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 6,
+        "race": "Человек"
+      }
+    },
+    "beto_roga": {
+      "name": {
+        "ru": "Бете Лога",
+        "jp": "ベート・ローガ",
+        "romaji": "Bēto Rōga"
+      },
+      "aliases": [
+        {
+          "ru": "Ванагранд",
+          "jp": "ヴァナルガンド",
+          "romaji": "Vanarugando"
+        },
+        {
+          "ru": "Свирепый Волк",
+          "jp": "凶狼",
+          "romaji": "Kyōrō"
+        }
+      ],
+      "description": "Оборотень, член Семьи Локи, уровень 6.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Локи",
+        "level": 6,
+        "race": "Оборотень"
+      }
+    },
+    "anakiti_otamu": {
+      "name": {
+        "ru": "Анакити Отаму",
+        "jp": "アナキティ・オータム",
+        "romaji": "Anakiti Ōtamu"
+      },
+      "aliases": [
+        {
+          "ru": "Аки"
+        },
+        {
+          "ru": "Кинеко",
+          "jp": "貴猫",
+          "romaji": "Kineko"
+        }
+      ],
+      "description": "Первоклассный авантюрист 5-го уровня, член Семьи Локи.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 5,
+        "race": "Коточеловек"
+      }
+    },
+    "tiona_hiryute": {
+      "name": {
+        "ru": "Тиона Хирюте",
+        "jp": "ティオナ・ヒリュテ",
+        "romaji": "Tiona Hiryute"
+      },
+      "aliases": [
+        {
+          "ru": "Амазонка",
+          "jp": "怒蛇",
+          "romaji": "Amazon"
+        },
+        {
+          "ru": "Рассекательница",
+          "jp": "大切断",
+          "romaji": "Daisetsudan"
+        }
+      ],
+      "description": "Амазонка, член Семьи Локи, уровень 6.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 6,
+        "race": "Амазонка"
+      }
+    },
+    "tione_hiryute": {
+      "name": {
+        "ru": "Тионе Хирюте",
+        "jp": "ティオネ・ヒリュテ",
+        "romaji": "Tione Hiryute"
+      },
+      "aliases": [
+        {
+          "ru": "Йормунганд",
+          "jp": "ヨルムンガンド",
+          "romaji": "Yorumungando"
+        }
+      ],
+      "description": "Амазонка, член Семьи Локи, уровень 6.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 6,
+        "race": "Амазонка"
+      }
+    },
+    "refiya_wiridisu": {
+      "name": {
+        "ru": "Лефия Виридис",
+        "jp": "レフィーヤ・ウィリディス",
+        "romaji": "Refīya Wiridisu"
+      },
+      "aliases": [
+        {
+          "ru": "Тысяча Эльфов",
+          "jp": "千の妖精",
+          "romaji": "Sauzando Erufu"
+        }
+      ],
+      "description": "Эльфийка-маг, член Семьи Локи, уровень 4.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Локи",
+        "level": 4,
+        "race": "Эльф"
+      }
+    },
+    "ottaru": {
+      "name": {
+        "ru": "Оттар",
+        "jp": "オッタル",
+        "romaji": "Ottaru"
+      },
+      "aliases": [
+        {
+          "ru": "Король",
+          "jp": "猛者",
+          "romaji": "Ōja"
+        },
+        {
+          "ru": "Капитан-Кабан",
+          "jp": "猪団長",
+          "romaji": "Inoshishi danchō"
+        },
+        {
+          "ru": "Кабан"
+        }
+      ],
+      "description": "Капитан Семьи Фрейи, 7-го уровня, но почти достиг 8. Является сильнейшим авантюристом Орарио.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 7,
+        "race": "Человек"
+      }
+    },
+    "aren_furomeru": {
+      "name": {
+        "ru": "Аллен Фромель",
+        "jp": "アレン・フローメル",
+        "romaji": "Aren Furōmeru"
+      },
+      "aliases": [
+        {
+          "ru": "Вана Фрея",
+          "jp": "ヴァーナ・フレイヤ",
+          "romaji": "Vāna Fureiya"
+        },
+        {
+          "ru": "Колесница Богини"
+        },
+        {
+          "ru": "Кот"
+        },
+        {
+          "ru": "Кошак"
+        }
+      ],
+      "description": "Член Семьи Фрейи, уровень 6, коточеловек. Самый быстрый авантюрист в Орарио.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 6,
+        "race": "Коточеловек"
+      }
+    },
+    "heguni_ragunaru": {
+      "name": {
+        "ru": "Хёгни Рагнар",
+        "jp": "ヘグニ・ラグナール",
+        "romaji": "Heguni Ragunāru"
+      },
+      "aliases": [
+        {
+          "ru": "Дайнслейв",
+          "jp": "黒妖の魔剣 ダインスレイヴ",
+          "romaji": "Dainsureivu"
+        }
+      ],
+      "description": "Член Семьи Фрейи, Темный эльф, уровень 6.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 6,
+        "race": "Темный эльф"
+      }
+    },
+    "hedin_serurando": {
+      "name": {
+        "ru": "Хедин Селланд",
+        "jp": "ヘディン・セルランド",
+        "romaji": "Hedin Serurando"
+      },
+      "aliases": [
+        {
+          "ru": "Хильдрслейв",
+          "jp": "白妖の魔杖 ヒルドスレイヴ",
+          "romaji": "Hirudisuvīni"
+        },
+        {
+          "ru": "Хильдслейв"
+        }
+      ],
+      "description": "Член Семьи Фрейи, уровень 6. Наставник Белла.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 6,
+        "race": "Эльф"
+      }
+    },
+    "heizu_veruvetto": {
+      "name": {
+        "ru": "Хейз Вельвет",
+        "jp": "ヘイズ・ヴェルヴェット",
+        "romaji": "Heizu Veruvetto"
+      },
+      "aliases": [
+        {
+          "ru": "Вана Мардолл",
+          "jp": "女神の黄金 ヴァナ・マルデル",
+          "romaji": "Vana Maruderu"
+        },
+        {
+          "ru": "Злато Богини"
+        }
+      ],
+      "description": "Член Семьи Фрейи, уровень 4. Лидер группы целителей «Андхримнир».",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Фрейи",
+        "level": 4
+      }
+    },
+    "herun": {
+      "name": {
+        "ru": "Хёрн",
+        "jp": "ヘルン",
+        "romaji": "Herun"
+      },
+      "aliases": [
+        {
+          "ru": "Служительница Богини",
+          "jp": "女神の付き人",
+          "romaji": "Megami no Tsukibito"
+        }
+      ],
+      "description": "Настоящая Сир, отдавшая свою внешность Фрейе. Член Семьи Фрейи.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Фрейи",
+        "race": "Божество"
+      }
+    },
+    "rona": {
+      "name": {
+        "ru": "Рона",
+        "jp": "ロナ",
+        "romaji": "Rona"
+      },
+      "aliases": [],
+      "description": "Эльфийка, член Семьи Фрейи, подчиненная Хейз.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Фрейи",
+        "race": "Эльф"
+      }
+    },
+    "irude": {
+      "name": {
+        "ru": "Ильде",
+        "jp": "イルデ",
+        "romaji": "Irude"
+      },
+      "aliases": [],
+      "description": "Человек, член Семьи Фрейи, подчиненная Хейз.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Фрейи",
+        "race": "Человек"
+      }
+    },
+    "arufuriggu": {
+      "name": {
+        "ru": "Альфриг",
+        "jp": "アルフリッグ",
+        "romaji": "Arufuriggu"
+      },
+      "aliases": [],
+      "description": "Один из братьев Гулливеров, член Семьи Фрейи. Полурослик, уровень 5.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 5,
+        "race": "Полурослик"
+      }
+    },
+    "dovarin": {
+      "name": {
+        "ru": "Двалинн",
+        "jp": "ドヴァリン",
+        "romaji": "Dovarin"
+      },
+      "aliases": [],
+      "description": "Один из братьев Гулливеров, член Семьи Фрейи. Полурослик, уровень 5.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 5,
+        "race": "Полурослик"
+      }
+    },
+    "beringu": {
+      "name": {
+        "ru": "Берлинг",
+        "jp": "ベーリング",
+        "romaji": "Bēringu"
+      },
+      "aliases": [],
+      "description": "Один из братьев Гулливеров, член Семьи Фрейи. Полурослик, уровень 5.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 5,
+        "race": "Полурослик"
+      }
+    },
+    "gureru": {
+      "name": {
+        "ru": "Грер",
+        "jp": "グレール",
+        "romaji": "Gurēru"
+      },
+      "aliases": [],
+      "description": "Один из братьев Гулливеров, член Семьи Фрейи. Полурослик, уровень 5.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Фрейи",
+        "level": 5,
+        "race": "Полурослик"
+      }
+    },
+    "hefaisutosu": {
+      "name": {
+        "ru": "Гефест",
+        "jp": "ヘファイストス",
+        "romaji": "Hefaisutosu"
+      },
+      "aliases": [],
+      "description": "Богиня кузнечного дела, глава Семьи Гефест.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гефест",
+        "race": "Божество"
+      }
+    },
+    "tsubaki_koruburando": {
+      "name": {
+        "ru": "Цубаки Коллбранде",
+        "jp": "椿・コルブランド",
+        "romaji": "Tsubaki Koruburando"
+      },
+      "aliases": [],
+      "description": "Полудварф, капитан Семьи Гефест. Мастер-кузнец, уровень 5.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Гефест",
+        "level": 5,
+        "race": "Полудварф"
+      }
+    },
+    "miaha": {
+      "name": {
+        "ru": "Миах",
+        "jp": "ミアハ",
+        "romaji": "Miaha"
+      },
+      "aliases": [],
+      "description": "Бог и глава Семьи Миах, специализирующейся на медицине.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Миах",
+        "race": "Божество"
+      }
+    },
+    "naaza": {
+      "name": {
+        "ru": "Нааза",
+        "jp": "ナァーザ",
+        "romaji": "Naaza"
+      },
+      "aliases": [
+        {
+          "ru": "Верная гончая бога медицины",
+          "jp": "医神の忠犬ミーヤル・ハウンド",
+          "romaji": "Mīyaru Haundo"
+        }
+      ],
+      "description": "Член Семьи Миах. Уровень 3.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Миах",
+        "level": 3
+      }
+    },
+    "dian_cecht": {
+      "name": {
+        "ru": "Диан Кехт",
+        "jp": "ディアンケヒト",
+        "romaji": "Dian Cecht"
+      },
+      "aliases": [],
+      "description": "Бог, глава Семьи Диан Кехт, специализирующейся на лечении.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Семья Диан Кехт",
+        "race": "Божество"
+      }
+    },
+    "amiddo_teasanare": {
+      "name": {
+        "ru": "Амид Тесанаре",
+        "jp": "アミッド・テアサナーレ",
+        "romaji": "Amiddo Teasanāre"
+      },
+      "aliases": [
+        {
+          "ru": "Серебряная святая",
+          "jp": "銀の聖女",
+          "romaji": "Gin no seijo"
+        }
+      ],
+      "description": "Капитан и главный врач Семьи Диан Кехт, уровень 2.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Семья Диан Кехт",
+        "level": 2
+      }
+    },
+    "arisa_ragasuto": {
+      "name": {
+        "ru": "Алиса Ларгхаст",
+        "jp": "アリサ・ラーガスト",
+        "romaji": "Arisa Rāgasuto"
+      },
+      "aliases": [],
+      "description": "Студентка и префект Школьного округа. Бывший член 7-го отряда в Классе Бальдра.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Школьный округ"
+      }
+    },
+    "niina_churu": {
+      "name": {
+        "ru": "Нина Тулле",
+        "jp": "ニイナ・チュール",
+        "romaji": "Niina Chūru"
+      },
+      "aliases": [],
+      "description": "Член «Третьего отряда», одноклассница Рапи (Белла), стажёрка из Школьного округа в Семье Гестии.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Школьный округ"
+      }
+    },
+    "reon_varudenburugu": {
+      "name": {
+        "ru": "Леон Ванденбург",
+        "jp": "レオン・ヴァルデンブルグ",
+        "romaji": "Reon Varudenburugu"
+      },
+      "aliases": [
+        {
+          "ru": "Первозданный Рыцарь",
+          "jp": "騎士の中の騎士",
+          "romaji": "Kishi no Naka no Kishi"
+        }
+      ],
+      "description": "Бывший герой, капитан Семьи Бальдра, классный руководитель «Класса Бальдра».",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Школьный округ"
+      }
+    },
+    "barudoru": {
+      "name": {
+        "ru": "Бальдр",
+        "jp": "バルドル",
+        "romaji": "Barudoru"
+      },
+      "aliases": [],
+      "description": "Бог, лидер Школьного округа, директор Академии.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Школьный округ",
+        "race": "Божество"
+      }
+    },
+    "aisha_beruka": {
+      "name": {
+        "ru": "Айша Белка",
+        "jp": "アイシャ・ベルカ",
+        "romaji": "Aisha Beruka"
+      },
+      "aliases": [],
+      "description": "Амазонка, член Семьи Гермес (официально — Семьи Плутоса). Бывший член Семьи Иштар. Уровень 4.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "level": 4,
+        "race": "Амазонка"
+      }
+    },
+    "asufi_aru_andoromeda": {
+      "name": {
+        "ru": "Асфи Аль Андромеда",
+        "jp": "アスフィ・アル・アンドロメда",
+        "romaji": "Asufi Aru Andoromeda"
+      },
+      "aliases": [
+        {
+          "ru": "Персей",
+          "jp": "万能者",
+          "romaji": "Peruseusu"
+        }
+      ],
+      "description": "Капитан Семьи Гермеса, создатель магических предметов.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи"
+      }
+    },
+    "ganesha": {
+      "name": {
+        "ru": "Ганеша",
+        "jp": "ガネーシャ",
+        "romaji": "Ganesha"
+      },
+      "aliases": [],
+      "description": "Бог, глава Семьи Ганеша, \"Бог Народа\". Отвечает за стражу в Орарио.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Другие персонажи",
+        "race": "Божество"
+      }
+    },
+    "rurune": {
+      "name": {
+        "ru": "Лулуне",
+        "jp": "ルルネ",
+        "romaji": "Rurune"
+      },
+      "aliases": [],
+      "description": "Девушка-собака из Семьи Гермеса.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Девушка-собака"
+      }
+    },
+    "samira": {
+      "name": {
+        "ru": "Самира",
+        "jp": "サミラ",
+        "romaji": "Samira"
+      },
+      "aliases": [],
+      "description": "Амазонка, соратница Айши.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Амазонка"
+      }
+    },
+    "uranosu": {
+      "name": {
+        "ru": "Уран",
+        "jp": "ウラノス",
+        "romaji": "Uranosu"
+      },
+      "aliases": [],
+      "description": "Бог, глава Гильдии, наблюдающий за Подземельем.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Другие персонажи",
+        "race": "Божество"
+      }
+    },
+    "roiman_madiru": {
+      "name": {
+        "ru": "Ройман Мардил",
+        "jp": "ロイマン・マーディール",
+        "romaji": "Roiman Mādīru"
+      },
+      "aliases": [],
+      "description": "Управляющий Гильдии (человек).",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Другие персонажи",
+        "race": "Человек"
+      }
+    },
+    "eina_churu": {
+      "name": {
+        "ru": "Эйна Тулле",
+        "jp": "エイナ・チュール",
+        "romaji": "Eina Chūru"
+      },
+      "aliases": [],
+      "description": "Полуэльф, работница Гильдии и куратор Белла.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Полуэльф"
+      }
+    },
+    "mia_gurando": {
+      "name": {
+        "ru": "Миа Гранд",
+        "jp": "ミア・グランド",
+        "romaji": "Mia Gurando"
+      },
+      "aliases": [
+        {
+          "ru": "Мама Миа"
+        }
+      ],
+      "description": "Хозяйка таверны «Хозяйка Плодородия», бывший капитан Семьи Фрейи, уровень 6.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "level": 6,
+        "race": "Гном"
+      }
+    },
+    "shiru_furova": {
+      "name": {
+        "ru": "Сир Флауер",
+        "jp": "シル・フローヴァ",
+        "romaji": "Shiru Furōva"
+      },
+      "aliases": [],
+      "description": "Работница «Хозяйки Плодородия», альтер-эго богини Фрейи.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи"
+      }
+    },
+    "anya_furomeru": {
+      "name": {
+        "ru": "Аня Фромель",
+        "jp": "アーニャ・フローメル",
+        "romaji": "Ānya Furōmeru"
+      },
+      "aliases": [],
+      "description": "Работница «Хозяйки Плодородия», бывший член Семьи Фрейи, сестра Аллена Фромеля.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Коточеловек"
+      }
+    },
+    "kuroe_roro": {
+      "name": {
+        "ru": "Хлоя Ролло",
+        "jp": "クロエ・ロロ",
+        "romaji": "Kuroe Roro"
+      },
+      "aliases": [],
+      "description": "Работница «Хозяйки Плодородия», бывший ассасин.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Коточеловек"
+      }
+    },
+    "runoa_fausuto": {
+      "name": {
+        "ru": "Луноа Фауст",
+        "jp": "ルノа・ファウスト",
+        "romaji": "Runoa Fausuto"
+      },
+      "aliases": [],
+      "description": "Работница «Хозяйки Плодородия», бывший охотник за головами.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи"
+      }
+    },
+    "rena_tari": {
+      "name": {
+        "ru": "Лена Талли",
+        "jp": "レナ・タリー",
+        "romaji": "Rena Tarī"
+      },
+      "aliases": [],
+      "description": "Амазонка, член Семьи Хаттор. Уровень 3.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "level": 3,
+        "race": "Амазонка"
+      }
+    },
+    "morudo_ratoro": {
+      "name": {
+        "ru": "Молд Латро",
+        "jp": "モルド・ラトロー",
+        "romaji": "Morudo Ratorō"
+      },
+      "aliases": [],
+      "description": "Авантюрист, бывший соперник Белла.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Другие персонажи"
+      }
+    },
+    "wine": {
+      "name": {
+        "ru": "Вьена",
+        "jp": "ウィーネ",
+        "romaji": "Wīne"
+      },
+      "aliases": [],
+      "description": "Ксенос (тип - Вуивр).",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Ксенос (Вуивр)"
+      }
+    },
+    "herumesu": {
+      "name": {
+        "ru": "Гермес",
+        "jp": "ヘルメス",
+        "romaji": "Herumesu"
+      },
+      "aliases": [],
+      "description": "Бог-вестник, глава Семьи Гермеса. Помогает Беллу по просьбе Зевса.",
+      "characteristics": {
+        "gender": "М",
+        "affiliation": "Другие персонажи",
+        "race": "Божество"
+      }
+    },
+    "aria": {
+      "name": {
+        "ru": "Ариа",
+        "jp": "アリア",
+        "romaji": "Aria"
+      },
+      "aliases": [],
+      "description": "Дух, мать Айз Валенштайн.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи",
+        "race": "Дух"
+      }
+    },
+    "misha_furotto": {
+      "name": {
+        "ru": "Миша Флотт",
+        "jp": "ミィシャ・フロット",
+        "romaji": "Misha Furotto"
+      },
+      "aliases": [
+        {
+          "ru": "Миша"
+        }
+      ],
+      "description": "Работница Гильдии, коллега Эйны.",
+      "characteristics": {
+        "gender": "Ж",
+        "affiliation": "Другие персонажи"
+      }
+    }
+  },
+  "terminology": {
+    "andofurimuniru": {
+      "name": {
+        "ru": "Андхримнир",
+        "jp": "アンドフリームニル",
+        "kanji": "満たす煤者達",
+        "romaji": "Andofurīmuniru"
+      },
+      "type": "Группа",
+      "description": "Группа целителей в Семье Фрейи под руководством Хейз Вельвет."
+    },
+    "argo_vesuta": {
+      "name": {
+        "ru": "Арго-Веста",
+        "jp": "アルゴ・ウェスタ",
+        "kanji": "聖火の英斬",
+        "romaji": "Argo Vesta"
+      },
+      "type": "Магия",
+      "description": "Магия Белла, аналог Послесвечения Леона. Заряжаемая рубящая атака."
+    },
+    "arugonoto": {
+      "name": {
+        "ru": "Аргонавт",
+        "jp": "アルゴノゥト",
+        "kanji": "英雄願望",
+        "romaji": "Argonaut"
+      },
+      "type": "Навык",
+      "description": "Пассивный навык Белла. Позволяет ему накапливать энергию для сверхмощной атаки, усиливающей его физические и магические способности в десятки раз."
+    },
+    "argonaut_kun": {
+      "name": {
+        "ru": "Аргонавтик",
+        "jp": "アルゴノゥト君",
+        "romaji": "Argonaut-kun"
+      },
+      "type": "Прозвище",
+      "description": "Прозвище, которое Тиона и Тионе используют для Белла."
+    },
+    "gariba_kyodai": {
+      "name": {
+        "ru": "Братья Гулливеры",
+        "jp": "ガリバー兄弟",
+        "romaji": "Garibā kyōdai"
+      },
+      "type": "Группа",
+      "description": "Четыре брата-полурослика из Семьи Фрейи (Альфриг, Двалинн, Берлинг, Грер), известные своей командной силой."
+    },
+    "girudo": {
+      "name": {
+        "ru": "Гильдия",
+        "jp": "ギルド",
+        "romaji": "Girudo"
+      },
+      "type": "Организация",
+      "description": "Организация, управляющая авантюристами и Подземельем."
+    },
+    "usagibito": {
+      "name": {
+        "ru": "Зайцелюд",
+        "jp": "兎人",
+        "romaji": "Usagibito"
+      },
+      "type": "Раса",
+      "description": "Раса гуманоидов с заячьими/кроличьими чертами."
+    },
+    "sesshoseki": {
+      "name": {
+        "ru": "Камень смерти",
+        "jp": "殺生石",
+        "romaji": "Sesshōseki"
+      },
+      "type": "Метафора",
+      "description": "Метафора для описания того, как Семья Иштар использовала магию Харухимэ."
+    },
+    "hestia_knife": {
+      "name": {
+        "ru": "Кинжал Гестии",
+        "jp": "ヘスティア・ナイフ",
+        "romaji": "Hestia Knife"
+      },
+      "type": "Оружие",
+      "description": "Оружие Белла. Иногда называется Канжал Богини."
+    },
+    "zenosu": {
+      "name": {
+        "ru": "Ксеносы",
+        "jp": "ゼノス",
+        "kanji": "異端児",
+        "romaji": "Itanji (Zenosu)"
+      },
+      "type": "Раса",
+      "description": "Разумные монстры, способные к речи."
+    },
+    "joka_kimitsu_iyashi_bako": {
+      "name": {
+        "ru": "Лечебно-очистительная капсула",
+        "jp": "浄化気密癒箱",
+        "romaji": "Jōka kimitsu iyashi-bako"
+      },
+      "type": "Устройство",
+      "description": "Устройство в Школьном округе для очищения и лечения."
+    },
+    "kurozzo_no_maken": {
+      "name": {
+        "ru": "Магический меч Кротцо",
+        "jp": "クロッゾの魔剣",
+        "romaji": "Kurozzo no maken"
+      },
+      "type": "Оружие",
+      "description": "Особый тип магических мечей, создаваемых Вельфом Кротцо."
+    },
+    "dochibi": {
+      "name": {
+        "ru": "Мелкая/Мелочь",
+        "jp": "ドチビ",
+        "romaji": "Dochibi"
+      },
+      "type": "Прозвище",
+      "description": "Прозвище, которое Локи использует для Гестии."
+    },
+    "faiaboruto": {
+      "name": {
+        "ru": "Огненная стрела",
+        "jp": "ファイアボルト",
+        "romaji": "Faiaboruto"
+      },
+      "type": "Магия",
+      "description": "Магия Белла."
+    },
+    "ganshou": {
+      "name": {
+        "ru": "Окулус",
+        "jp": "眼晶",
+        "romaji": "Ganshou"
+      },
+      "type": "Предмет",
+      "description": "Магический предмет для связи на дальних расстояниях. Не является аналогом «Зеркала Богов»."
+    },
+    "uchide_no_kozuchi": {
+      "name": {
+        "ru": "Повышение уровня",
+        "jp": "ウチデノコヅチ",
+        "kanji": "打ち出の小槌",
+        "romaji": "Uchide no Kozuchi"
+      },
+      "type": "Магия",
+      "description": "Магия Харухимэ."
+    },
+    "parumu": {
+      "name": {
+        "ru": "Полурослик",
+        "jp": "パルゥム",
+        "romaji": "Parumu"
+      },
+      "type": "Раса",
+      "description": "Раса (в оригинале Pallum)."
+    },
+    "iroboke_megami": {
+      "name": {
+        "ru": "Помешанная",
+        "jp": "色ボケ女神",
+        "romaji": "Iroboke megami"
+      },
+      "type": "Прозвище",
+      "description": "Прозвище, которое Локи использует для Гестии, указывая на её влюбленность."
+    },
+    "zanko": {
+      "name": {
+        "ru": "Послесвечение",
+        "jp": "ザンコウ",
+        "kanji": "残光",
+        "romaji": "Zankō"
+      },
+      "type": "Техника",
+      "description": "Техника атаки дальнего боя. Является невероятно мощным рубящим ударом."
+    },
+    "zankou": {
+      "name": {
+        "ru": "Рассекающий свет/послесвечение",
+        "jp": "Занкоу"
+      },
+      "type": "Техника",
+      "description": "Удар, которому Леон обучал Белла в 20-м томе. Белл части освоил его и у него появился навык Арго-Веста."
+    },
+    "rivira_no_machi": {
+      "name": {
+        "ru": "Ривира",
+        "jp": "リヴィラの街",
+        "romaji": "Rivira no Machi"
+      },
+      "type": "Локация",
+      "description": "Город на 18-м этаже Подземелья."
+    },
+    "tenshisho": {
+      "name": {
+        "ru": "Сонная трава",
+        "jp": "天使草",
+        "romaji": "Tenshishō"
+      },
+      "type": "Предмет",
+      "description": "Трава с сильным усыпляющим эффектом."
+    },
+    "nemunemu_arugosu": {
+      "name": {
+        "ru": "Сонный Аргос",
+        "jp": "ネムネムアルゴス",
+        "romaji": "Nemunemu Arugosu"
+      },
+      "type": "Предмет",
+      "description": "Магическая флейта, разработанная Асфи, вызывающая сон."
+    },
+    "forukuvangu": {
+      "name": {
+        "ru": "Фольквангр",
+        "jp": "フォールクヴァング",
+        "romaji": "Fōrukuvangu"
+      },
+      "type": "Локация",
+      "description": "Бывшая штаб-квартира Семьи Фрейи."
+    },
+    "hakugen": {
+      "name": {
+        "ru": "Хакугэн",
+        "jp": "白幻",
+        "romaji": "Hakugen"
+      },
+      "type": "Оружие",
+      "description": "Запасной кинжал Белла."
+    },
+    "furinguhoruni": {
+      "name": {
+        "ru": "Хрингхорн",
+        "jp": "フリングホルニ",
+        "romaji": "Furinguhoruni"
+      },
+      "type": "Локация",
+      "description": "Название гигантского корабля, на котором расположен Школьный округ."
+    },
+    "da_pu_dao_zaga": {
+      "name": {
+        "ru": "Широкий меч «Зага»",
+        "jp": "大朴刀《ザーガ》",
+        "romaji": "Dà pǔ dāo \"Zāga\""
+      },
+      "type": "Оружие",
+      "description": "Оружие Айши Белки."
+    },
+    "gakku": {
+      "name": {
+        "ru": "Школьный округ",
+        "jp": "学区",
+        "romaji": "Gakku"
+      },
+      "type": "Локация",
+      "description": "Странствующий корабль-академия."
+    },
+    "osen_shoki": {
+      "name": {
+        "ru": "Ядовитые миазмы",
+        "jp": "汚染瘴気",
+        "romaji": "Osen shōki"
+      },
+      "type": "Явление",
+      "description": "Ядовитые испарения в Драконьей долине."
+    },
+    "riarisu_fureze": {
+      "name": {
+        "ru": "Liaris Freese",
+        "jp": "リアリス・フレーゼ",
+        "romaji": "Riarisu Furēze"
+      },
+      "type": "Навык",
+      "description": "Навык Белла, ускоряющий рост."
+    }
+  }
+}
