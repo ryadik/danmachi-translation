@@ -1,0 +1,13 @@
+{
+  "workspace_dir": "translator/workspace",
+  "max_concurrent_workers": 3,
+  "chapter_splitter": {
+    "target_chunk_size": 200,
+    "max_part_chars": 400,
+    "search_window": 50,
+    "min_chunk_size": 50
+  },
+  "gemini_cli": {
+    "model": "gemini-2.5-flash"
+  }
+}
