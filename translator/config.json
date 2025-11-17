@@ -2,10 +2,10 @@
   "workspace_dir": "translator/workspace",
   "max_concurrent_workers": 3,
   "chapter_splitter": {
-    "target_chunk_size": 200,
-    "max_part_chars": 400,
-    "search_window": 50,
-    "min_chunk_size": 50
+    "target_chunk_size": 1200,
+    "max_part_chars": 24000,
+    "search_window": 500,
+    "min_chunk_size": 500
   },
   "gemini_cli": {
     "model": "gemini-2.5-flash"

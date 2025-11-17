@@ -91,104 +91,118 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
         print(f"[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: Не удалось загрузить config.json. {e}")
         return
 
-    # --- 1. НАСТРОЙКА --- 
+    # --- 1. НАСТРОЙКА И БЛОКИРОВКА ---
     max_workers = cfg.get("max_concurrent_workers", 3)
     chapter_name = os.path.basename(os.path.dirname(chapter_file_path))
     workspace_paths = task_manager.setup_task_workspace(cfg['workspace_dir'], chapter_name)
     
-    print(f"[Orchestrator] Рабочая директория для главы '{chapter_name}' создана.")
+    lock_file = os.path.join(workspace_paths["base"], ".lock")
+    discovery_checkpoint = os.path.join(workspace_paths["base"], ".stage_discovery_complete")
+    translation_checkpoint = os.path.join(workspace_paths["base"], ".stage_translation_complete")
 
-    # --- 2. РАЗДЕЛЕНИЕ --- 
-    print("[Orchestrator] Запуск разделения главы на части...")
+    if os.path.exists(lock_file) and not resume:
+        print(f"[Orchestrator] ОБНАРУЖЕНА БЛОКИРОВКА: Процесс для главы '{chapter_name}' уже запущен или был завершен некорректно.")
+        print(f"  Используйте флаг --resume для возобновления или --force-split для принудительного перезапуска.")
+        sys.exit(1)
+
+    if force_split and os.path.exists(workspace_paths["base"]):
+        print("[Orchestrator] Обнаружен флаг --force-split. Полная очистка рабочей директории...")
+        task_manager.cleanup_workspace(workspace_paths)
+        workspace_paths = task_manager.setup_task_workspace(cfg['workspace_dir'], chapter_name)
+
     try:
-        chapter_splitter.split_chapter_intelligently(
-            chapter_file_path=chapter_file_path,
-            output_dir=workspace_paths["pending"], # ИСПРАВЛЕНО
-            target_chars=cfg['chapter_splitter']['target_chunk_size'],
-            max_part_chars=cfg['chapter_splitter']['max_part_chars']
-        )
-        print("[Orchestrator] Глава успешно разделена на части.")
-    except Exception as e:
-        print(f"[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: Не удалось разделить главу. {e}")
-        return
-    
-    # --- 3. ЭТАП 1: ПОИСК ТЕРМИНОВ --- 
-    print("\n--- ЭТАП 1: Поиск новых терминов ---")
-    try:
-        with open("translator/prompts/term_discovery.txt", 'r', encoding='utf-8') as f:
-            term_prompt_template = f.read()
-    except FileNotFoundError:
-        print("[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: Файл промпта 'term_discovery.txt' не найден.")
-        return
+        # Создаем lock-файл
+        with open(lock_file, 'w') as f: f.write(str(os.getpid()))
+        print(f"[Orchestrator] Рабочая директория для главы '{chapter_name}' создана и заблокирована.")
 
-    pending_tasks_discovery = task_manager.get_pending_tasks(workspace_paths)
-    if not pending_tasks_discovery:
-        print("[Orchestrator] Не найдено задач для обработки. Завершение.")
-        return
+        # --- 2. ВОЗОБНОВЛЕНИЕ И РАЗДЕЛЕНИЕ ---
+        if resume:
+            task_manager.requeue_stalled_and_failed(workspace_paths)
 
-    discovery_cli_args = {"output_format": "json"}
-    discovery_success = _run_workers_pooled(max_workers, pending_tasks_discovery, term_prompt_template, workspace_paths, "terms", discovery_cli_args)
-
-    if not discovery_success:
-        print("[Orchestrator] Этап поиска терминов завершился с ошибками. Процесс прерван.")
-        return
-
-    print("\n--- Сбор и подтверждение терминов ---")
-    newly_found_terms = term_collector.collect_terms(workspace_paths)
-    approved_terms = term_collector.present_for_confirmation(newly_found_terms)
-    
-    if approved_terms is None:
-        print("[Orchestrator] Пользователь отменил операцию. Выход.")
-        return
+        if not task_manager.get_pending_tasks(workspace_paths) and not resume:
+            print("[Orchestrator] Запуск разделения главы на части...")
+            chapter_splitter.split_chapter_intelligently(
+                chapter_file_path=chapter_file_path,
+                output_dir=workspace_paths["pending"],
+                target_chars=cfg['chapter_splitter']['target_chunk_size'],
+                max_part_chars=cfg['chapter_splitter']['max_part_chars']
+            )
+            print("[Orchestrator] Глава успешно разделена на части.")
         
-    if approved_terms:
-        main_glossary_path = "data/glossary.json"
-        term_collector.update_glossary_file(approved_terms, main_glossary_path)
-    else:
-        print("[Orchestrator] Нет новых терминов для добавления в глоссарий.")
-    
-    # --- 4. ЭТАП 2: ПЕРЕВОД --- 
-    print("\n--- ЭТАП 2: Перевод чанков ---")
-    task_manager.requeue_completed_tasks(workspace_paths)
-    
-    try:
-        with open("translator/prompts/translation.txt", 'r', encoding='utf-8') as f:
-            translation_prompt_template = f.read()
-        with open("data/glossary.json", 'r', encoding='utf-8') as f:
-            glossary_content = f.read()
-    except FileNotFoundError as e:
-        print(f"[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: Не найден файл промпта или глоссария: {e}")
-        return
+        # --- 3. ЭТАП 1: ПОИСК ТЕРМИНОВ ---
+        if not os.path.exists(discovery_checkpoint):
+            print("\n--- ЭТАП 1: Поиск новых терминов ---")
+            with open("translator/prompts/term_discovery.txt", 'r', encoding='utf-8') as f:
+                term_prompt_template = f.read()
 
-    pending_tasks_for_translation = task_manager.get_pending_tasks(workspace_paths)
-    if not pending_tasks_for_translation:
-        print("[Orchestrator] Не найдено задач для перевода. Завершение.")
-        return
+            pending_tasks_discovery = task_manager.get_pending_tasks(workspace_paths)
+            if pending_tasks_discovery:
+                discovery_cli_args = {"output_format": "json"}
+                discovery_success = _run_workers_pooled(max_workers, pending_tasks_discovery, term_prompt_template, workspace_paths, "terms", discovery_cli_args)
 
-    translation_cli_args = {"output_format": "text"}
-    
-    done_dir = workspace_paths["done"]
-    for f in os.listdir(done_dir):
-        if f.endswith("_translated.txt"):
-            os.remove(os.path.join(done_dir, f))
+                if not discovery_success:
+                    print("[Orchestrator] Этап поиска терминов завершился с ошибками. Процесс прерван.")
+                    return
 
-    translation_success = _run_workers_pooled(
-        max_workers=max_workers,
-        tasks=pending_tasks_for_translation,
-        prompt_template=translation_prompt_template,
-        workspace_paths=workspace_paths,
-        output_dir_key="done",
-        cli_args=translation_cli_args,
-        glossary_str=glossary_content
-    )
+            print("\n--- Сбор и подтверждение терминов ---")
+            newly_found_terms = term_collector.collect_terms(workspace_paths)
+            approved_terms = term_collector.present_for_confirmation(newly_found_terms)
+            
+            if approved_terms is None:
+                print("[Orchestrator] Пользователь отменил операцию. Выход.")
+                return
+                
+            if approved_terms:
+                main_glossary_path = "data/glossary.json"
+                term_collector.update_glossary_file(approved_terms, main_glossary_path)
+            else:
+                print("[Orchestrator] Нет новых терминов для добавления в глоссарий.")
+            
+            with open(discovery_checkpoint, 'w') as f: f.write(time.strftime("%Y-%m-%d %H:%M:%S"))
+            print("[Orchestrator] Чекпоинт 'discovery_complete' создан.")
+        else:
+            print("\n[Orchestrator] Обнаружен чекпоинт. Пропуск этапа поиска терминов.")
+        
+        # --- 4. ЭТАП 2: ПЕРЕВОД ---
+        if not os.path.exists(translation_checkpoint):
+            print("\n--- ЭТАП 2: Перевод чанков ---")
+            task_manager.requeue_completed_tasks(workspace_paths)
+            
+            with open("translator/prompts/translation.txt", 'r', encoding='utf-8') as f:
+                translation_prompt_template = f.read()
+            with open("data/glossary.json", 'r', encoding='utf-8') as f:
+                glossary_content = f.read()
 
-    if not translation_success:
-        print("[Orchestrator] Этап перевода завершился с ошибками. Процесс прерван.")
-        return
+            pending_tasks_for_translation = task_manager.get_pending_tasks(workspace_paths)
+            if pending_tasks_for_translation:
+                translation_cli_args = {"output_format": "text"}
+                
+                done_dir = workspace_paths["done"]
+                for f in os.listdir(done_dir):
+                    if f.endswith("_translated.txt"):
+                        os.remove(os.path.join(done_dir, f))
 
-    # --- 5. СБОРКА И ОЧИСТКА --- 
-    print("\n--- Сборка итогового файла ---")
-    try:
+                translation_success = _run_workers_pooled(
+                    max_workers=max_workers,
+                    tasks=pending_tasks_for_translation,
+                    prompt_template=translation_prompt_template,
+                    workspace_paths=workspace_paths,
+                    output_dir_key="done",
+                    cli_args=translation_cli_args,
+                    glossary_str=glossary_content
+                )
+
+                if not translation_success:
+                    print("[Orchestrator] Этап перевода завершился с ошибками. Процесс прерван.")
+                    return
+            
+            with open(translation_checkpoint, 'w') as f: f.write(time.strftime("%Y-%m-%d %H:%M:%S"))
+            print("[Orchestrator] Чекпоинт 'translation_complete' создан.")
+        else:
+            print("\n[Orchestrator] Обнаружен чекпоинт. Пропуск этапа перевода.")
+
+        # --- 5. СБОРКА И ОЧИСТКА ---
+        print("\n--- Сборка итогового файла ---")
         done_dir = workspace_paths["done"]
         translated_chunks = [os.path.join(done_dir, f) for f in os.listdir(done_dir) if f.endswith("_translated.txt")]
         
@@ -209,10 +223,17 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
         print(f"[Orchestrator] ✅ Глава успешно переведена и собрана в файл: {final_output_path}")
 
     except Exception as e:
-        print(f"[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: Не удалось собрать финальный файл. {e}")
-        return
-
-    print("\n[Orchestrator] Процесс завершен.")
+        print(f"[Orchestrator] КРИТИЧЕСКАЯ ОШИБКА: {e}")
+    finally:
+        if os.path.exists(lock_file):
+            os.remove(lock_file)
+            print("[Orchestrator] Блокировка снята.")
+        
+        if cleanup:
+            print("\n[Orchestrator] Запрошена очистка рабочей директории...")
+            task_manager.cleanup_workspace(workspace_paths)
+        else:
+            print("\n[Orchestrator] Процесс завершен. Рабочая директория сохранена для отладки.")
 
 if __name__ == '__main__':
     test_chapter_path = "text/chapters/prologue/jp.txt"
