@@ -35,6 +35,19 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
 
                 final_prompt = prompt_template.format(text=chunk_content, glossary=glossary_str)
 
+                # --- ОТЛАДКА ---
+                if output_dir_key == 'terms':
+                    log_file_path = os.path.join(workspace_paths["base"], "debug_prompts.log")
+                    with open(log_file_path, 'a', encoding='utf-8') as log_f:
+                        log_f.write("-" * 80 + "\n")
+                        log_f.write(f"--- ДАННЫЕ ДЛЯ ВОРКЕРА: {os.path.basename(in_progress_path)} ---\n")
+                        log_f.write("--- СОДЕРЖИМОЕ ЧАНКА: ---\n")
+                        log_f.write(chunk_content + "\n")
+                        log_f.write("\n--- ИТОГОВЫЙ ПРОМПТ: ---\n")
+                        log_f.write(final_prompt + "\n")
+                        log_f.write("-" * 80 + "\n\n")
+                # --- КОНЕЦ ОТЛАДКИ ---
+
                 output_filename = os.path.basename(in_progress_path).replace('.txt', f'_{output_dir_key}.json' if output_dir_key == 'terms' else '_translated.txt')
                 output_path = os.path.join(workspace_paths[output_dir_key], output_filename)
                 
@@ -70,6 +83,23 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                 else:
                     completed_tasks_count += 1
                     print(f"[Orchestrator] Воркер для {os.path.basename(p_info['in_progress_path'])} успешно завершен. ({completed_tasks_count}/{total_tasks})")
+                    
+                    # --- ОТЛАДКА ВЫВОДА ---
+                    if output_dir_key == 'terms':
+                        try:
+                            with open(p_info['output_path'], 'r', encoding='utf-8') as f_out:
+                                worker_output = f_out.read()
+                            
+                            log_file_path = os.path.join(workspace_paths["base"], "debug_output.log")
+                            with open(log_file_path, 'a', encoding='utf-8') as log_f:
+                                log_f.write("-" * 80 + "\n")
+                                log_f.write(f"--- ВЫВОД ОТ ВОРКЕРА: {os.path.basename(p_info['in_progress_path'])} ---\n")
+                                log_f.write(worker_output + "\n")
+                                log_f.write("-" * 80 + "\n\n")
+                        except Exception as e:
+                            print(f"[Orchestrator] Ошибка при логировании вывода: {e}")
+                    # --- КОНЕЦ ОТЛАДКИ ---
+
                     if output_dir_key != "done":
                         task_manager.move_task(p_info['in_progress_path'], workspace_paths["done"])
             else:
@@ -132,20 +162,49 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
         # --- 3. ЭТАП 1: ПОИСК ТЕРМИНОВ ---
         if not os.path.exists(discovery_checkpoint):
             print("\n--- ЭТАП 1: Поиск новых терминов ---")
+            
+            try:
+                with open("data/glossary.json", 'r', encoding='utf-8') as f:
+                    glossary_content = f.read()
+            except FileNotFoundError:
+                while True:
+                    choice = input("[Orchestrator] ВНИМАНИЕ: Файл 'data/glossary.json' не найден. Продолжить с пустым глоссарием? (y/n): ").lower()
+                    if choice == 'y':
+                        print("[Orchestrator] Продолжение работы с пустым глоссарием.")
+                        glossary_content = "{}" # Используем пустой JSON-объект
+                        # Создаем пустой файл, чтобы последующие этапы не падали
+                        with open("data/glossary.json", 'w', encoding='utf-8') as f:
+                            f.write(glossary_content)
+                        break
+                    elif choice == 'n':
+                        print("[Orchestrator] Операция прервана пользователем.")
+                        return
+                    else:
+                        print("Неверный ввод. Пожалуйста, введите 'y' или 'n'.")
+
             with open("translator/prompts/term_discovery.txt", 'r', encoding='utf-8') as f:
                 term_prompt_template = f.read()
 
             pending_tasks_discovery = task_manager.get_pending_tasks(workspace_paths)
             if pending_tasks_discovery:
                 discovery_cli_args = {"output_format": "json"}
-                discovery_success = _run_workers_pooled(max_workers, pending_tasks_discovery, term_prompt_template, workspace_paths, "terms", discovery_cli_args)
+                discovery_success = _run_workers_pooled(
+                    max_workers, 
+                    pending_tasks_discovery, 
+                    term_prompt_template, 
+                    workspace_paths, 
+                    "terms", 
+                    discovery_cli_args,
+                    glossary_str=glossary_content # Передаем глоссарий сюда
+                )
 
                 if not discovery_success:
                     print("[Orchestrator] Этап поиска терминов завершился с ошибками. Процесс прерван.")
                     return
 
+
             print("\n--- Сбор и подтверждение терминов ---")
-            newly_found_terms = term_collector.collect_terms(workspace_paths)
+            newly_found_terms = term_collector.collect_and_deduplicate_terms(workspace_paths)
             approved_terms = term_collector.present_for_confirmation(newly_found_terms)
             
             if approved_terms is None:

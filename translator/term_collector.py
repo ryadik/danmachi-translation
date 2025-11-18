@@ -1,84 +1,136 @@
 import json
 import os
-from typing import List, Dict, Any, Optional
+import re
+from typing import Dict, Any, Optional, List
 
-def collect_terms(workspace_paths: dict) -> List[Dict[str, Any]]:
+def collect_and_deduplicate_terms(workspace_paths: dict) -> Dict[str, Any]:
     """
-    Собирает и объединяет термины из всех JSON-файлов в директории 'terms'.
-    
-    Args:
-        workspace_paths (dict): Словарь с путями к рабочим директориям.
-
-    Returns:
-        list: Единый, дедуплицированный список словарей с терминами.
+    Собирает термины из всех JSON-файлов, распаковывает ответ gemini-cli,
+    и возвращает единый словарь с дедуплицированными терминами.
     """
     terms_dir = workspace_paths.get("terms")
     if not terms_dir or not os.path.exists(terms_dir):
-        print(f"[TermCollector] Директория для терминов не найдена: {terms_dir}")
-        return []
+        return {}
 
-    all_terms = []
-    seen_originals = set()
+    unique_terms = {} # Используем словарь для дедупликации по ID
 
     for filename in os.listdir(terms_dir):
-        if filename.endswith(".json"):
-            file_path = os.path.join(terms_dir, filename)
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    terms_from_file = json.load(f)
-                    if isinstance(terms_from_file, list):
-                        for term in terms_from_file:
-                            original = term.get("original")
-                            if original and original not in seen_originals:
-                                all_terms.append(term)
-                                seen_originals.add(original)
-            except (json.JSONDecodeError, IOError) as e:
-                print(f"[TermCollector] Ошибка чтения или парсинга файла '{filename}': {e}")
+        if not filename.endswith(".json"):
+            continue
+        
+        file_path = os.path.join(terms_dir, filename)
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                cli_output = json.load(f)
+
+            if not (isinstance(cli_output, dict) and "response" in cli_output):
+                continue
+
+            response_str = cli_output["response"]
+            match = re.search(r'```json\s*\n(.*?)\s*\n```', response_str, re.DOTALL)
+            json_str = match.group(1) if match else response_str
+            
+            data = json.loads(json_str)
+
+            for category, items in data.items():
+                if not isinstance(items, dict): continue
+                for term_id, term_data in items.items():
+                    # "Первый победил": если ID уже встречался, мы его не перезаписываем
+                    if term_id not in unique_terms:
+                        unique_terms[term_id] = {"category": category, "data": term_data}
+
+        except (json.JSONDecodeError, IOError, TypeError) as e:
+            print(f"[TermCollector] Ошибка обработки файла '{filename}': {e}")
     
-    # Сортируем для консистентного вывода
-    all_terms.sort(key=lambda x: x.get('original', ''))
-    return all_terms
+    # Преобразуем обратно в структуру с категориями
+    final_structure = {"characters": {}, "terminology": {}, "expressions": {}}
+    for term_id, term_info in unique_terms.items():
+        cat = term_info["category"]
+        if cat in final_structure:
+            final_structure[cat][term_id] = term_info["data"]
+            
+    return final_structure
 
-def present_for_confirmation(terms: List[Dict[str, Any]]) -> Optional[List[Dict[str, Any]]]:
-    """
-    Отображает список терминов в консоли и запускает интерактивный режим
-    для подтверждения, редактирования или удаления.
+def _edit_term(term_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Интерактивный редактор для одного термина."""
+    print("\n--- Редактирование термина ---")
+    
+    # Редактирование основных полей name
+    for key in ["ru", "jp", "romaji"]:
+        new_val = input(f"  name.{key} (Enter, чтобы оставить '{term_data['name'].get(key, '')}'): ").strip()
+        if new_val: term_data['name'][key] = new_val
 
-    Returns:
-        list | None: Финальный список терминов, если пользователь его подтвердил,
-                      иначе None.
+    # Редактирование description
+    new_desc = input(f"  description (Enter, чтобы оставить '{term_data.get('description', '')}'): ").strip()
+    if new_desc: term_data['description'] = new_desc
+
+    # Редактирование context
+    new_context = input(f"  context (Enter, чтобы оставить '{term_data.get('context', '')}'): ").strip()
+    if new_context: term_data['context'] = new_context
+
+    # Редактирование aliases
+    print("  Текущие псевдонимы:", [a.get('ru', '') for a in term_data.get('aliases', [])])
+    if input("  Редактировать псевдонимы? (y/n): ").lower() == 'y':
+        term_data['aliases'] = []
+        while True:
+            alias_ru = input("    Добавить псевдоним (RU) (Enter для завершения): ").strip()
+            if not alias_ru: break
+            term_data['aliases'].append({"ru": alias_ru})
+
+    # Редактирование характеристик в зависимости от категории
+    if "characteristics" in term_data: # Персонаж
+        for key, val in term_data["characteristics"].items():
+            new_val = input(f"  characteristics.{key} (Enter, чтобы оставить '{val}'): ").strip()
+            if new_val: term_data["characteristics"][key] = new_val
+    elif "type" in term_data: # Термин
+        new_type = input(f"  type (Enter, чтобы оставить '{term_data['type']}'): ").strip()
+        if new_type: term_data['type'] = new_type
+
+    print("--- Редактирование завершено ---")
+    return term_data
+
+def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
-    if not terms:
+    Отображает новые термины и запускает интерактивный режим для их подтверждения и редактирования.
+    """
+    if not any(new_terms.values()):
         print("\n[TermCollector] Новых терминов для добавления не найдено.")
-        return []
+        return {}
 
-    print("\n" + "="*30)
-    print("  Найдены новые термины")
-    print("="*30)
-    
-    current_terms = list(terms) # Создаем рабочую копию
+    # Преобразуем в плоский список для удобства пользователя
+    term_list = []
+    for category, items in new_terms.items():
+        for term_id, data in items.items():
+            term_list.append({"id": term_id, "category": category, "data": data})
 
     while True:
-        for i, term in enumerate(current_terms):
-            print(f"  {i+1:02d}. {term.get('original', '')} -> {term.get('translation', '')} ({term.get('note', '')})")
-        
-        print("\n--- Команды ---")
-        print("  - 'ok' или 'yes': Принять все и продолжить.")
-        print("  - 'del 1 3': Удалить термины №1 и №3.")
-        print("  - 'edit 2': Редактировать термин №2.")
-        print("  - 'quit' или 'exit': Отменить и выйти.")
+        print("\n" + "="*40)
+        print("  Найдены новые термины для подтверждения")
+        print("="*40)
+        for i, term in enumerate(term_list):
+            print(f"\n--- Термин #{i+1} ---")
+            print(f"  ID: {term['id']} (Категория: {term['category']})")
+            print(f"  JP: {term['data']['name'].get('jp', 'N/A')}")
+            print(f"  RU: {term['data']['name'].get('ru', 'N/A')}")
+            print(f"  Описание: {term['data'].get('description', 'N/A')}")
+            print(f"  Контекст: {term['data'].get('context', 'N/A')}")
+
+        print("\n" + "-"*40)
+        print("  Команды: ok, del <номера>, edit <номер>, quit")
+        print("-"*40)
         
         try:
             command = input("\nВведите команду: ").strip().lower()
         except EOFError:
-            print("\n[TermCollector] Ввод отменен. Операция прервана.")
             return None
 
         if command in ['ok', 'yes', 'y']:
-            return current_terms
+            final_terms = {"characters": {}, "terminology": {}, "expressions": {}}
+            for term in term_list:
+                final_terms[term["category"]][term["id"]] = term["data"]
+            return final_terms
         
         if command in ['quit', 'exit', 'q']:
-            print("[TermCollector] Операция отменена пользователем.")
             return None
             
         parts = command.split()
@@ -86,87 +138,57 @@ def present_for_confirmation(terms: List[Dict[str, Any]]) -> Optional[List[Dict[
         
         try:
             indices = [int(p) - 1 for p in parts[1:]]
-            if not all(0 <= i < len(current_terms) for i in indices):
+            if not all(0 <= i < len(term_list) for i in indices):
                 print("Ошибка: Неверный номер термина.")
                 continue
 
             if action == 'del':
-                # Сортируем индексы в обратном порядке, чтобы удаление не сбивало нумерацию
-                for i in sorted(indices, reverse=True):
-                    del current_terms[i]
+                for i in sorted(indices, reverse=True): del term_list[i]
                 print(f"Удалено {len(indices)} терминов.")
-
+            
             elif action == 'edit':
                 if len(indices) != 1:
                     print("Ошибка: Редактировать можно только один термин за раз.")
                     continue
-                
                 idx_to_edit = indices[0]
-                term_to_edit = current_terms[idx_to_edit]
-                
-                print(f"\n--- Редактирование термина №{idx_to_edit + 1} ---")
-                print(f"Оригинал: {term_to_edit['original']}")
-                
-                new_trans = input(f"  Новый перевод (Enter, чтобы оставить '{term_to_edit['translation']}'): ").strip()
-                if new_trans: term_to_edit['translation'] = new_trans
-                
-                new_note = input(f"  Новое примечание (Enter, чтобы оставить '{term_to_edit['note']}'): ").strip()
-                if new_note: term_to_edit['note'] = new_note
-                
-                print("Термин обновлен.")
+                term_list[idx_to_edit]["data"] = _edit_term(term_list[idx_to_edit]["data"])
 
             else:
                 print(f"Неизвестная команда: '{action}'")
 
         except (ValueError, IndexError):
-            print("Ошибка: Неверный формат команды. Укажите 'команда номер'.")
+            print("Ошибка: Неверный формат команды.")
 
-def update_glossary_file(new_terms: List[Dict[str, Any]], glossary_path: str):
+def update_glossary_file(new_terms: Dict[str, Any], glossary_path: str):
     """
-    Загружает основной файл глоссария, добавляет в него новые термины
+    Загружает основной глоссарий, добавляет в него новые, подтвержденные термины
     и сохраняет обратно.
     """
-    if not new_terms:
+    if not any(new_terms.values()):
         return
 
     try:
         with open(glossary_path, 'r', encoding='utf-8') as f:
-            glossary_data = json.load(f)
+            content = f.read()
+            glossary_data = json.loads(content) if content else {"characters": {}, "terminology": {}, "expressions": {}}
     except (FileNotFoundError, json.JSONDecodeError):
-        # Если файл не найден или пуст, создаем новую структуру
-        glossary_data = {"characters": {}, "terminology": {}}
+        glossary_data = {"characters": {}, "terminology": {}, "expressions": {}}
 
     print(f"\n[TermCollector] Обновление основного глоссария: {glossary_path}")
-    added_count = 0
-    for term in new_terms:
-        original = term.get("original")
-        if not original:
-            continue
-
-        # Простое правило: если в примечании есть "персонаж", добавляем в characters, иначе в terminology
-        note = term.get("note", "").lower()
-        category = "characters" if "персонаж" in note else "terminology"
-        
-        # Создаем ID для термина
-        term_id = original.lower().replace(" ", "_").replace("・", "_")
-
-        if term_id not in glossary_data[category]:
-            glossary_data[category][term_id] = {
-                "name": {
-                    "ru": term.get("translation", ""),
-                    "jp": original
-                },
-                "description": term.get("note", ""),
-                "aliases": []
-            }
-            added_count += 1
     
-    if added_count > 0:
-        try:
-            with open(glossary_path, 'w', encoding='utf-8') as f:
-                json.dump(glossary_data, f, ensure_ascii=False, indent=2, sort_keys=True)
-            print(f"[TermCollector] Успешно добавлено {added_count} новых терминов в глоссарий.")
-        except IOError as e:
-            print(f"[TermCollector] КРИТИЧЕСКАЯ ОШИБКА: Не удалось сохранить обновленный глоссарий: {e}")
-    else:
-        print("[TermCollector] Нет новых уникальных терминов для добавления в глоссарий.")
+    # Гарантируем наличие всех категорий
+    for cat in ["characters", "terminology", "expressions"]:
+        if cat not in glossary_data:
+            glossary_data[cat] = {}
+
+    # Объединяем словари
+    glossary_data["characters"].update(new_terms.get("characters", {}))
+    glossary_data["terminology"].update(new_terms.get("terminology", {}))
+    glossary_data["expressions"].update(new_terms.get("expressions", {}))
+    
+    try:
+        with open(glossary_path, 'w', encoding='utf-8') as f:
+            json.dump(glossary_data, f, ensure_ascii=False, indent=2)
+        print(f"[TermCollector] Глоссарий успешно обновлен.")
+    except IOError as e:
+        print(f"[TermCollector] КРИТИЧЕСКАЯ ОШИБКА: Не удалось сохранить обновленный глоссарий: {e}")
