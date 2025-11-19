@@ -23,9 +23,9 @@ def main():
         help='Путь к .txt файлу главы, которую нужно перевести.'
     )
     parser.add_argument(
-        '--cleanup',
+        '--debug',
         action='store_true',
-        help='Удалить рабочую директорию главы после успешного завершения.'
+        help='Если указан, рабочая директория не будет удалена после успешного завершения для отладки.'
     )
     parser.add_argument(
         '--resume',
@@ -49,17 +49,19 @@ def main():
         sys.exit(1)
 
     try:
-        # Передаем все аргументы в оркестратор
+        # По умолчанию очистка включена. Флаг --debug отключает ее.
+        cleanup_enabled = not args.debug
+
         orchestrator.run_translation_process(
             chapter_file_path=args.chapter_file,
-            cleanup=args.cleanup,
+            cleanup=cleanup_enabled,
             resume=args.resume,
             force_split=args.force_split
         )
     except Exception as e:
         logger.critical(f"--- КРИТИЧЕСКАЯ ОШИБКА В ПРОЦЕССЕ ВЫПОЛНЕНИЯ ---")
         logger.critical(f"Тип ошибки: {type(e).__name__}")
-        logger.critical(f"Сообщение: {e}", exc_info=True) # exc_info добавляет traceback в лог-файл
+        logger.critical(f"Сообщение: {e}", exc_info=True)
         logger.critical("-------------------------------------------------")
         sys.exit(1)
 
