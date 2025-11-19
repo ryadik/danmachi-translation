@@ -14,7 +14,7 @@ from . import chapter_splitter
 from . import task_manager
 from . import term_collector
 
-def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str, workspace_paths: Dict[str, str], output_dir_key: str, cli_args: Dict[str, Any], glossary_str: str = ""):
+def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str, workspace_paths: Dict[str, str], output_dir_key: str, cli_args: Dict[str, Any], glossary_str: str = "", style_guide_str: str = ""):
     active_processes = []
     task_queue = list(tasks)
     all_successful = True
@@ -31,7 +31,9 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                 with open(in_progress_path, 'r', encoding='utf-8') as f:
                     chunk_content = f.read()
 
-                final_prompt = prompt_template.format(text=chunk_content, glossary=glossary_str)
+                final_prompt = prompt_template.replace('{text}', chunk_content)
+                final_prompt = final_prompt.replace('{glossary}', glossary_str)
+                final_prompt = final_prompt.replace('{style_guide}', style_guide_str)
                 
                 input_logger.info(f"[id: {worker_id}] --- PROMPT FOR: {os.path.basename(in_progress_path)} ---\n{final_prompt}\n")
 
@@ -40,7 +42,6 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                 
                 command = ['gemini', '-p', final_prompt, '--output-format', cli_args.get('output_format', 'text')]
 
-                # stdout и stderr теперь перехватываются для полного контроля
                 proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
                 active_processes.append({"process": proc, "in_progress_path": in_progress_path, "output_path": output_path, "id": worker_id})
                 system_logger.info(f"[Orchestrator] Запущен воркер [id: {worker_id}] для: {os.path.basename(in_progress_path)}")
@@ -70,7 +71,6 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                     completed_tasks_count += 1
                     system_logger.info(f"[Orchestrator] Воркер [id: {worker_id}] для {worker_name} успешно завершен. ({completed_tasks_count}/{total_tasks})")
                     
-                    # Записываем успешный вывод и в файл назначения, и в лог
                     try:
                         with open(p_info['output_path'], 'w', encoding='utf-8') as f_out:
                             f_out.write(stdout_output)
@@ -111,11 +111,11 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
     translation_checkpoint = os.path.join(workspace_paths["base"], ".stage_translation_complete")
 
     if os.path.exists(lock_file) and not resume:
-        system_logger.warning(f"[Orchestrator] ОБНАРУЖЕНА БЛОКИРОВКА: ...")
+        system_logger.warning(f"[Orchestrator] ОБНАРУЖЕНА БЛОКИРОВКА...")
         sys.exit(1)
 
     if force_split and os.path.exists(workspace_paths["base"]):
-        system_logger.info("[Orchestrator] Обнаружен флаг --force-split. Полная очистка рабочей директории...")
+        system_logger.info("[Orchestrator] Обнаружен флаг --force-split...")
         task_manager.cleanup_workspace(workspace_paths)
         workspace_paths = task_manager.setup_task_workspace(cfg['workspace_dir'], chapter_name)
         setup_loggers(workspace_paths["logs"], debug_mode)
@@ -155,7 +155,7 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
             if pending_tasks_discovery:
                 discovery_success = _run_workers_pooled(max_workers, pending_tasks_discovery, term_prompt_template, workspace_paths, "terms", {"output_format": "json"}, glossary_str=glossary_content)
                 if not discovery_success:
-                    system_logger.error("[Orchestrator] Этап поиска терминов завершился с ошибками. Процесс прерван.")
+                    system_logger.error("[Orchestrator] Этап поиска терминов завершился с ошибками.")
                     return
 
             system_logger.info("\n--- Сбор и подтверждение терминов ---")
@@ -179,16 +179,22 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
             system_logger.info("\n--- ЭТАП 2: Перевод чанков ---")
             task_manager.requeue_completed_tasks(workspace_paths)
             
-            with open("translator/prompts/translation.txt", 'r', encoding='utf-8') as f:
-                translation_prompt_template = f.read()
-            with open("data/glossary.json", 'r', encoding='utf-8') as f:
-                glossary_content = f.read()
+            try:
+                with open("translator/prompts/translation.txt", 'r', encoding='utf-8') as f:
+                    translation_prompt_template = f.read()
+                with open("data/glossary.json", 'r', encoding='utf-8') as f:
+                    glossary_content = f.read()
+                with open("data/style_guide.md", 'r', encoding='utf-8') as f:
+                    style_guide_content = f.read()
+            except FileNotFoundError as e:
+                system_logger.error(f"[Orchestrator] Не найден обязательный файл (глоссарий, стайлгайд или промпт): {e}")
+                return
 
             pending_tasks_for_translation = task_manager.get_pending_tasks(workspace_paths)
             if pending_tasks_for_translation:
-                translation_success = _run_workers_pooled(max_workers, pending_tasks_for_translation, translation_prompt_template, workspace_paths, "done", {"output_format": "text"}, glossary_str=glossary_content)
+                translation_success = _run_workers_pooled(max_workers, pending_tasks_for_translation, translation_prompt_template, workspace_paths, "done", {"output_format": "text"}, glossary_str=glossary_content, style_guide_str=style_guide_content)
                 if not translation_success:
-                    system_logger.error("[Orchestrator] Этап перевода завершился с ошибками. Процесс прерван.")
+                    system_logger.error("[Orchestrator] Этап перевода завершился с ошибками.")
                     return
             
             with open(translation_checkpoint, 'w') as f: f.write(time.strftime("%Y-%m-%d %H:%M:%S"))
