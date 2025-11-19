@@ -20,11 +20,3 @@ def load_config():
     with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-# Пример использования (можно закомментировать или удалить)
-if __name__ == '__main__':
-    try:
-        config = load_config()
-        print("Конфигурация успешно загружена:")
-        print(json.dumps(config, indent=2, ensure_ascii=False))
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Ошибка: {e}")
