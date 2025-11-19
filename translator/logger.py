@@ -1,42 +1,80 @@
 import logging
 import sys
+import os
 
-def setup_logger():
+# Создаем "пустые" логгеры-заглушки
+system_logger = logging.getLogger('system')
+input_logger = logging.getLogger('worker_input')
+output_logger = logging.getLogger('worker_output')
+
+# По умолчанию весь вывод отключен с помощью NullHandler
+# Это предотвращает ошибки "No handler found" если логгер используется до конфигурации
+system_logger.addHandler(logging.NullHandler())
+input_logger.addHandler(logging.NullHandler())
+output_logger.addHandler(logging.NullHandler())
+system_logger.propagate = False
+input_logger.propagate = False
+output_logger.propagate = False
+
+
+def setup_loggers(log_dir: str, debug_mode: bool):
     """
-    Настраивает и возвращает универсальный логгер для проекта.
+    Настраивает все логгеры проекта.
+    Если debug_mode=False, настраивает только вывод в консоль для system_logger.
+    Если debug_mode=True, настраивает вывод в консоль и в 3 разных файла.
     """
-    # 1. Создаем логгер
-    logger = logging.getLogger('TranslatorApp')
-    logger.setLevel(logging.DEBUG)  # Устанавливаем самый низкий уровень для захвата всех сообщений
+    # Очищаем все предыдущие хендлеры, чтобы избежать дублирования
+    for logger_instance in [system_logger, input_logger, output_logger]:
+        if logger_instance.hasHandlers():
+            logger_instance.handlers.clear()
 
-    # Предотвращаем дублирование сообщений, если функция вызывается повторно
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
-    # 2. Создаем обработчики (хендлеры)
-    # Обработчик для вывода в консоль
+    # --- ОБЩИЕ НАСТРОЙКИ ---
+    # Устанавливаем минимальный уровень захвата сообщений.
+    # Реальный вывод будет определяться уровнем хендлеров.
+    system_logger.setLevel(logging.DEBUG)
+    input_logger.setLevel(logging.DEBUG)
+    output_logger.setLevel(logging.DEBUG)
+    
+    # Консольный хендлер для системного логгера (работает всегда)
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.INFO)  # В консоль выводим только INFO и выше
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(logging.Formatter('%(message)s'))
+    system_logger.addHandler(console_handler)
 
-    # Обработчик для вывода в файл
-    # Файл будет перезаписываться при каждом запуске (mode='w')
-    file_handler = logging.FileHandler('translator.log', mode='w', encoding='utf-8')
-    file_handler.setLevel(logging.DEBUG)  # В файл пишем всё, включая отладочную информацию
+    if not debug_mode:
+        # Если не дебаг-режим, добавляем NullHandler-ы для файловых логгеров
+        # чтобы они "молчали", и выходим
+        input_logger.addHandler(logging.NullHandler())
+        output_logger.addHandler(logging.NullHandler())
+        return
 
-    # 3. Создаем форматирование для сообщений
-    # Формат для консоли: простое сообщение
-    console_format = logging.Formatter('%(message)s')
-    console_handler.setFormatter(console_format)
+    # --- НАСТРОЙКИ ДЛЯ DEBUG-РЕЖИМА ---
+    
+    # Убедимся, что директория для логов существует
+    os.makedirs(log_dir, exist_ok=True)
 
-    # Формат для файла: подробная информация
-    file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    file_handler.setFormatter(file_format)
+    # Общий формат для всех файлов логов
+    file_formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-    # 4. Добавляем обработчики к логгеру
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
+    # 1. Файловый хендлер для system_logger
+    system_log_path = os.path.join(log_dir, 'system_output.log')
+    system_file_handler = logging.FileHandler(system_log_path, mode='w', encoding='utf-8')
+    system_file_handler.setLevel(logging.DEBUG)
+    system_file_handler.setFormatter(file_formatter)
+    system_logger.addHandler(system_file_handler)
+    
+    # 2. Файловый хендлер для input_logger
+    input_log_path = os.path.join(log_dir, 'workers_input.log')
+    input_file_handler = logging.FileHandler(input_log_path, mode='w', encoding='utf-8')
+    input_file_handler.setLevel(logging.DEBUG)
+    input_file_handler.setFormatter(file_formatter)
+    input_logger.addHandler(input_file_handler)
 
-    return logger
+    # 3. Файловый хендлер для output_logger
+    output_log_path = os.path.join(log_dir, 'workers_output.log')
+    output_file_handler = logging.FileHandler(output_log_path, mode='w', encoding='utf-8')
+    output_file_handler.setLevel(logging.DEBUG)
+    output_file_handler.setFormatter(file_formatter)
+    output_logger.addHandler(output_file_handler)
 
-# Создаем и экспортируем один экземпляр логгера для всего приложения
-logger = setup_logger()
+    system_logger.debug("Логгеры успешно настроены в debug-режиме.")
