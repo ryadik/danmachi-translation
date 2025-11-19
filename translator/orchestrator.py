@@ -77,8 +77,16 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                         except Exception as e:
                             logger.error(f"[Orchestrator] Ошибка при логировании вывода: {e}")
 
+                    # --- КОНЕЦ ОТЛАДКИ ---
+
+                    # Если это не этап перевода, перемещаем исходный чанк в 'done'.
+                    # Если это этап перевода, то исходный чанк больше не нужен.
                     if output_dir_key != "done":
                         task_manager.move_task(p_info['in_progress_path'], workspace_paths["done"])
+                    else:
+                        # Удаляем исходный чанк, так как он успешно обработан
+                        os.remove(p_info['in_progress_path'])
+
             else:
                 remaining_processes.append(p_info)
         
