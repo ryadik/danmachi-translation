@@ -1,12 +1,13 @@
 import os
 import re
 import sys
+from .logger import logger
 
 def split_chapter_intelligently(chapter_file_path, output_dir, target_chars=3000, max_part_chars=5000):
     """
     Splits a chapter file into smaller parts and saves them directly into output_dir.
     """
-    print(f"Processing chapter file: {chapter_file_path}")
+    logger.info(f"Processing chapter file: {chapter_file_path}")
     
     os.makedirs(output_dir, exist_ok=True)
 
@@ -26,7 +27,7 @@ def split_chapter_intelligently(chapter_file_path, output_dir, target_chars=3000
 
         with open(part_output_file, 'w', encoding='utf-8') as out_f:
             out_f.writelines(current_part_lines)
-        print(f"  Saved part {part_num} to {part_output_file} ({current_part_chars} chars)")
+        logger.info(f"  Saved part {part_num} to {part_output_file} ({current_part_chars} chars)")
         current_part_lines = []
         current_part_chars = 0
         part_num += 1

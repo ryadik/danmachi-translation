@@ -2,6 +2,7 @@ import json
 import os
 import re
 from typing import Dict, Any, Optional, List
+from .logger import logger
 
 def collect_and_deduplicate_terms(workspace_paths: dict) -> Dict[str, Any]:
     """
@@ -40,7 +41,7 @@ def collect_and_deduplicate_terms(workspace_paths: dict) -> Dict[str, Any]:
                         unique_terms[term_id] = {"category": category, "data": term_data}
 
         except (json.JSONDecodeError, IOError, TypeError) as e:
-            print(f"[TermCollector] Ошибка обработки файла '{filename}': {e}")
+            logger.error(f"[TermCollector] Ошибка обработки файла '{filename}': {e}")
     
     # Преобразуем обратно в структуру с категориями
     final_structure = {"characters": {}, "terminology": {}, "expressions": {}}
@@ -53,7 +54,7 @@ def collect_and_deduplicate_terms(workspace_paths: dict) -> Dict[str, Any]:
 
 def _edit_term(term_data: Dict[str, Any]) -> Dict[str, Any]:
     """Интерактивный редактор для одного термина."""
-    print("\n--- Редактирование термина ---")
+    logger.info("\n--- Редактирование термина ---")
     
     # Редактирование основных полей name
     for key in ["ru", "jp", "romaji"]:
@@ -69,7 +70,7 @@ def _edit_term(term_data: Dict[str, Any]) -> Dict[str, Any]:
     if new_context: term_data['context'] = new_context
 
     # Редактирование aliases
-    print("  Текущие псевдонимы:", [a.get('ru', '') for a in term_data.get('aliases', [])])
+    logger.info(f"  Текущие псевдонимы: {[a.get('ru', '') for a in term_data.get('aliases', [])]}")
     if input("  Редактировать псевдонимы? (y/n): ").lower() == 'y':
         term_data['aliases'] = []
         while True:
@@ -86,7 +87,7 @@ def _edit_term(term_data: Dict[str, Any]) -> Dict[str, Any]:
         new_type = input(f"  type (Enter, чтобы оставить '{term_data['type']}'): ").strip()
         if new_type: term_data['type'] = new_type
 
-    print("--- Редактирование завершено ---")
+    logger.info("--- Редактирование завершено ---")
     return term_data
 
 def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -94,7 +95,7 @@ def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, An
     Отображает новые термины и запускает интерактивный режим для их подтверждения и редактирования.
     """
     if not any(new_terms.values()):
-        print("\n[TermCollector] Новых терминов для добавления не найдено.")
+        logger.info("\n[TermCollector] Новых терминов для добавления не найдено.")
         return {}
 
     # Преобразуем в плоский список для удобства пользователя
@@ -104,20 +105,20 @@ def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, An
             term_list.append({"id": term_id, "category": category, "data": data})
 
     while True:
-        print("\n" + "="*40)
-        print("  Найдены новые термины для подтверждения")
-        print("="*40)
+        logger.info("\n" + "="*40)
+        logger.info("  Найдены новые термины для подтверждения")
+        logger.info("="*40)
         for i, term in enumerate(term_list):
-            print(f"\n--- Термин #{i+1} ---")
-            print(f"  ID: {term['id']} (Категория: {term['category']})")
-            print(f"  JP: {term['data']['name'].get('jp', 'N/A')}")
-            print(f"  RU: {term['data']['name'].get('ru', 'N/A')}")
-            print(f"  Описание: {term['data'].get('description', 'N/A')}")
-            print(f"  Контекст: {term['data'].get('context', 'N/A')}")
+            logger.info(f"\n--- Термин #{i+1} ---")
+            logger.info(f"  ID: {term['id']} (Категория: {term['category']})")
+            logger.info(f"  JP: {term['data']['name'].get('jp', 'N/A')}")
+            logger.info(f"  RU: {term['data']['name'].get('ru', 'N/A')}")
+            logger.info(f"  Описание: {term['data'].get('description', 'N/A')}")
+            logger.info(f"  Контекст: {term['data'].get('context', 'N/A')}")
 
-        print("\n" + "-"*40)
-        print("  Команды: ok, del <номера>, edit <номер>, quit")
-        print("-"*40)
+        logger.info("\n" + "-"*40)
+        logger.info("  Команды: ok, del <номера>, edit <номер>, quit")
+        logger.info("-" * 40)
         
         try:
             command = input("\nВведите команду: ").strip().lower()
@@ -127,7 +128,8 @@ def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, An
         if command in ['ok', 'yes', 'y']:
             final_terms = {"characters": {}, "terminology": {}, "expressions": {}}
             for term in term_list:
-                final_terms[term["category"]][term["id"]] = term["data"]
+                if term["category"] in final_terms:
+                    final_terms[term["category"]][term["id"]] = term["data"]
             return final_terms
         
         if command in ['quit', 'exit', 'q']:
@@ -139,25 +141,25 @@ def present_for_confirmation(new_terms: Dict[str, Any]) -> Optional[Dict[str, An
         try:
             indices = [int(p) - 1 for p in parts[1:]]
             if not all(0 <= i < len(term_list) for i in indices):
-                print("Ошибка: Неверный номер термина.")
+                logger.warning("Ошибка: Неверный номер термина.")
                 continue
 
             if action == 'del':
                 for i in sorted(indices, reverse=True): del term_list[i]
-                print(f"Удалено {len(indices)} терминов.")
+                logger.info(f"Удалено {len(indices)} терминов.")
             
             elif action == 'edit':
                 if len(indices) != 1:
-                    print("Ошибка: Редактировать можно только один термин за раз.")
+                    logger.warning("Ошибка: Редактировать можно только один термин за раз.")
                     continue
                 idx_to_edit = indices[0]
                 term_list[idx_to_edit]["data"] = _edit_term(term_list[idx_to_edit]["data"])
 
             else:
-                print(f"Неизвестная команда: '{action}'")
+                logger.warning(f"Неизвестная команда: '{action}'")
 
         except (ValueError, IndexError):
-            print("Ошибка: Неверный формат команды.")
+            logger.error("Ошибка: Неверный формат команды.")
 
 def update_glossary_file(new_terms: Dict[str, Any], glossary_path: str):
     """
@@ -174,7 +176,7 @@ def update_glossary_file(new_terms: Dict[str, Any], glossary_path: str):
     except (FileNotFoundError, json.JSONDecodeError):
         glossary_data = {"characters": {}, "terminology": {}, "expressions": {}}
 
-    print(f"\n[TermCollector] Обновление основного глоссария: {glossary_path}")
+    logger.info(f"\n[TermCollector] Обновление основного глоссария: {glossary_path}")
     
     # Гарантируем наличие всех категорий
     for cat in ["characters", "terminology", "expressions"]:
@@ -189,6 +191,6 @@ def update_glossary_file(new_terms: Dict[str, Any], glossary_path: str):
     try:
         with open(glossary_path, 'w', encoding='utf-8') as f:
             json.dump(glossary_data, f, ensure_ascii=False, indent=2)
-        print(f"[TermCollector] Глоссарий успешно обновлен.")
+        logger.info(f"[TermCollector] Глоссарий успешно обновлен.")
     except IOError as e:
-        print(f"[TermCollector] КРИТИЧЕСКАЯ ОШИБКА: Не удалось сохранить обновленный глоссарий: {e}")
+        logger.critical(f"[TermCollector] КРИТИЧЕСКАЯ ОШИБКА: Не удалось сохранить обновленный глоссарий: {e}")
