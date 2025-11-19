@@ -206,7 +206,8 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
 
         translated_chunks.sort(key=lambda f: get_part_number(os.path.basename(f)))
         
-        final_output_path = f"{chapter_name}_translated.txt"
+        input_dir = os.path.dirname(chapter_file_path)
+        final_output_path = os.path.join(input_dir, "ru.txt")
         
         with open(final_output_path, 'w', encoding='utf-8') as final_file:
             for chunk_path in translated_chunks:
