@@ -41,7 +41,7 @@ def copy_tasks_to_next_step(source_done_dir: str, dest_pending_dir: str):
     copied_count = 0
     # ИСПРАВЛЕНО: Копируем любые .txt файлы, а не только с префиксом part_
     for filename in os.listdir(source_done_dir):
-        if filename.endswith(".txt"):
+        if filename.startswith("chunk_") and filename.endswith(".txt"):
             source_file = os.path.join(source_done_dir, filename)
             dest_file = os.path.join(dest_pending_dir, filename)
             shutil.copy2(source_file, dest_file)

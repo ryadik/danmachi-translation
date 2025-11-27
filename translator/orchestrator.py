@@ -27,7 +27,6 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
             worker_id = uuid.uuid4().hex[:6]
             try:
                 in_progress_path = task_manager.move_task(task_path, step_paths["in_progress"])
-                
                 with open(in_progress_path, 'r', encoding='utf-8') as f:
                     chunk_content = f.read()
 
@@ -42,7 +41,6 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                     output_path = os.path.join(step_paths["done"], output_filename)
                 
                 command = ['gemini', '-p', final_prompt, '--output-format', cli_args.get('output_format', 'text')]
-
                 proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
                 active_processes.append({"process": proc, "in_progress_path": in_progress_path, "output_path": output_path, "id": worker_id, "is_term_discovery": output_suffix == ".json"})
                 system_logger.info(f"[Orchestrator] Запущен воркер [id: {worker_id}] для: {os.path.basename(in_progress_path)}")
@@ -77,7 +75,7 @@ def _run_workers_pooled(max_workers: int, tasks: List[str], prompt_template: str
                         output_logger.info(f"[{worker_id}] --- SUCCESSFUL OUTPUT FROM: {worker_name} ---\n{stdout_output}\n")
                     except Exception as e:
                         system_logger.error(f"[Orchestrator] Ошибка при записи вывода от воркера [id: {worker_id}]: {e}")
-
+                    
                     if p_info["is_term_discovery"]:
                         task_manager.move_task(p_info['in_progress_path'], step_paths["done"])
                     else:
@@ -210,6 +208,7 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
         system_logger.info("\n--- Сборка итогового файла ---")
         final_chunks_dir = workspace_paths["steps"]["reading"]["done"]
         final_chunks = [os.path.join(final_chunks_dir, f) for f in sorted(os.listdir(final_chunks_dir))]
+        final_chunks.sort(key=lambda f: int(re.search(r'chunk_(\d+).txt', os.path.basename(f)).group(1)))
         
         input_dir = os.path.dirname(chapter_file_path)
         final_output_path = os.path.join(input_dir, "ru.txt")
