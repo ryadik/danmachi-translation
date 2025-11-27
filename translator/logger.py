@@ -9,13 +9,9 @@ output_logger = logging.getLogger('worker_output')
 
 # По умолчанию весь вывод отключен с помощью NullHandler
 # Это предотвращает ошибки "No handler found" если логгер используется до конфигурации
-system_logger.addHandler(logging.NullHandler())
-input_logger.addHandler(logging.NullHandler())
-output_logger.addHandler(logging.NullHandler())
-system_logger.propagate = False
-input_logger.propagate = False
-output_logger.propagate = False
-
+for logger_instance in [system_logger, input_logger, output_logger]:
+    logger_instance.addHandler(logging.NullHandler())
+    logger_instance.propagate = False
 
 def setup_loggers(log_dir: str, debug_mode: bool):
     """
@@ -34,7 +30,7 @@ def setup_loggers(log_dir: str, debug_mode: bool):
     system_logger.setLevel(logging.DEBUG)
     input_logger.setLevel(logging.DEBUG)
     output_logger.setLevel(logging.DEBUG)
-    
+
     # Консольный хендлер для системного логгера (работает всегда)
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
@@ -54,7 +50,7 @@ def setup_loggers(log_dir: str, debug_mode: bool):
     os.makedirs(log_dir, exist_ok=True)
 
     # Общий формат для всех файлов логов
-    file_formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     # 1. Файловый хендлер для system_logger
     system_log_path = os.path.join(log_dir, 'system_output.log')

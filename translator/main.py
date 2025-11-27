@@ -3,50 +3,23 @@ import os
 import sys
 import logging
 
-# Добавляем корневую директорию проекта в путь
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Добавляем корневую директорию проекта (родителя 'translator') в путь,
+# чтобы можно было использовать абсолютные импорты от 'translator'.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from translator.logger import setup_loggers, system_logger
 from translator import orchestrator
-from translator.logger import system_logger # ИСПРАВЛЕНО
 
 def main():
-    """
-    Главная функция, обрабатывающая запуск из командной строки.
-    """
-    parser = argparse.ArgumentParser(
-        description='Запускает процесс перевода для указанной главы.',
-        formatter_class=argparse.RawTextHelpFormatter
-    )
-    parser.add_argument(
-        'chapter_file',
-        type=str,
-        help='Путь к .txt файлу главы, которую нужно перевести.'
-    )
-    parser.add_argument(
-        '--debug',
-        action='store_true',
-        help='Если указан, рабочая директория не будет удалена после успешного завершения для отладки.'
-    )
-    parser.add_argument(
-        '--resume',
-        action='store_true',
-        help='Возобновить прерванный процесс. Не запускает разделение главы.'
-    )
-    parser.add_argument(
-        '--force-split',
-        action='store_true',
-        help='Принудительно удалить существующую рабочую директорию и начать с этапа разделения.'
-    )
-
+    parser = argparse.ArgumentParser(description='Запускает процесс перевода для указанной главы.', formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('chapter_file', type=str, help='Путь к .txt файлу главы, которую нужно перевести.')
+    parser.add_argument('--debug', action='store_true', help='Если указан, рабочая директория не будет удалена после успешного завершения для отладки.')
+    parser.add_argument('--resume', action='store_true', help='Возобновить прерванный процесс. Не запускает разделение главы.')
+    parser.add_argument('--force-split', action='store_true', help='Принудительно удалить существующую рабочую директорию и начать с этапа разделения.')
     args = parser.parse_args()
 
-    # ПРОВЕРКА ПУТИ ДО НАСТРОЙКИ ЛОГГЕРА, ИСПОЛЬЗУЕМ PRINT
-    if not os.path.exists(args.chapter_file):
-        print(f"Ошибка: Файл не найден по указанному пути: {args.chapter_file}")
-        sys.exit(1)
-        
-    if not os.path.isfile(args.chapter_file):
-        print(f"Ошибка: Указанный путь не является файлом: {args.chapter_file}")
+    if not os.path.exists(args.chapter_file) or not os.path.isfile(args.chapter_file):
+        print(f"Ошибка: Файл не найден или путь не является файлом: {args.chapter_file}")
         sys.exit(1)
 
     try:
