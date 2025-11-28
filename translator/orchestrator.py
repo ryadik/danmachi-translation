@@ -109,11 +109,11 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
     reading_checkpoint = os.path.join(workspace_paths["base"], ".stage_reading_complete")
 
     if os.path.exists(lock_file) and not resume:
-        system_logger.warning(f"[Orchestrator] ОБНАРУЖЕНА БЛОКИРОВКА для главы '{chapter_name}'. Используйте --resume или --force-split.")
+        system_logger.warning(f"[Orchestrator] ОБНАРУЖЕНА БЛОКИРОВКА для главы '{chapter_name}'. Используйте `--resume` или `--force-split`.")
         sys.exit(1)
 
     if force_split and os.path.exists(workspace_paths["base"]):
-        system_logger.info("[Orchestrator] Обнаружен флаг --force-split. Полная очистка рабочей директории...")
+        system_logger.info("[Orchestrator] Обнаружен флаг `--force-split`. Полная очистка рабочей директории...")
         task_manager.cleanup_workspace(workspace_paths)
         workspace_paths = task_manager.setup_task_workspace(cfg['workspace_dir'], chapter_name)
         setup_loggers(workspace_paths["logs"], debug_mode)
@@ -128,7 +128,7 @@ def run_translation_process(chapter_file_path: str, cleanup: bool, resume: bool,
         # --- Этап 0: Разделение на чанки ---
         discovery_paths = workspace_paths["steps"]["discovery"]
         if not task_manager.get_pending_tasks(discovery_paths) and not resume:
-            system_logger.info("[Orchestrator] Запуск разделения главы на чанки...")
+            system_logger.info("[Orchestrator] Разделение главы на чанки...")
             chapter_splitter.split_chapter_intelligently(chapter_file_path, discovery_paths["pending"], cfg['chapter_splitter']['target_chunk_size'], cfg['chapter_splitter']['max_part_chars'])
         
         # --- Этап 1: Поиск терминов ---

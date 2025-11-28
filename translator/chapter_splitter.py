@@ -7,7 +7,7 @@ def split_chapter_intelligently(chapter_file_path, output_dir, target_chars=3000
     """
     Splits a chapter file into smaller parts and saves them directly into output_dir.
     """
-    system_logger.info(f"Processing chapter file: {chapter_file_path}")
+    system_logger.info(f"[Splitter] Обработка файла главы: {chapter_file_path}")
     
     os.makedirs(output_dir, exist_ok=True)
 
@@ -27,7 +27,7 @@ def split_chapter_intelligently(chapter_file_path, output_dir, target_chars=3000
 
         with open(chunk_output_file, 'w', encoding='utf-8') as out_f:
             out_f.writelines(current_chunk_lines)
-        system_logger.info(f"  Saved chunk {chunk_num} to {chunk_output_file} ({current_chunk_chars} chars)")
+        system_logger.info(f"[Splitter] Чанк №{chunk_num} сохранен в {chunk_output_file} ({current_chunk_chars} символов)")
         current_chunk_lines = []
         current_chunk_chars = 0
         chunk_num += 1

@@ -161,3 +161,7 @@ python3 translator/main.py --debug --resume text/chapters/prologue/jp.txt
 - [ ] автогенерация информации о мире на основе web_search
 - [ ] промпты для разных языков
 - [ ] сделать из скрипта - утилиту
+
+
+edit 12 16 28
+del 9
